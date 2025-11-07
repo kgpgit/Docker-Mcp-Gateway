@@ -10,8 +10,8 @@ import (
 )
 
 func getDockerDesktopPaths() (DockerDesktopPaths, error) {
-	// Se estiver em modo contêiner ou modo nativo, retornar paths vazios
-	if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" || os.Getenv("DOCKER_MCP_NATIVE_MODE") == "1" {
+	// Usa detecção automática para determinar se está em modo nativo ou contêiner
+	if IsContainerMode() || IsNativeMode() {
 		return DockerDesktopPaths{
 			AdminSettingPath:     "",
 			BackendSocket:        "",

@@ -13,6 +13,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"go.opentelemetry.io/otel"
 
+	"github.com/docker/mcp-gateway/pkg/desktop"
 	"github.com/docker/mcp-gateway/pkg/docker"
 	"github.com/docker/mcp-gateway/pkg/health"
 	"github.com/docker/mcp-gateway/pkg/interceptors"
@@ -256,7 +257,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 		}
 
 		// When running in a container, find on which network we are running.
-		if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" {
+		if desktop.IsContainerMode() {
 			networks, err := g.guessNetworks(ctx)
 			if err != nil {
 				return fmt.Errorf("guessing network: %w", err)
@@ -270,9 +271,9 @@ func (g *Gateway) Run(ctx context.Context) error {
 	}
 
 	// When running in Container mode or native mode, disable OAuth notification monitoring and authentication
-	inContainer := os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1"
-	nativeMode := os.Getenv("DOCKER_MCP_NATIVE_MODE") == "1"
-	isDockerDesktop := !inContainer && !nativeMode
+	inContainer := desktop.IsContainerMode()
+	nativeMode := desktop.IsNativeMode()
+	isDockerDesktop := desktop.IsDockerDesktop()
 
 	if g.McpOAuthDcrEnabled && isDockerDesktop {
 		// Start OAuth notification monitor to receive OAuth related events from Docker Desktop
@@ -331,7 +332,7 @@ func (g *Gateway) Run(ctx context.Context) error {
 	}
 
 	// Initialize authentication token for SSE and streaming modes
-	// Skip authentication when running in container (DOCKER_MCP_IN_CONTAINER=1)
+	// Skip authentication when running in container or native mode
 	transport := strings.ToLower(g.Transport)
 	if (transport == "sse" || transport == "http" || transport == "streamable" || transport == "streaming" || transport == "streamable-http") && !inContainer && !nativeMode {
 		token, wasGenerated, err := getOrGenerateAuthToken()
