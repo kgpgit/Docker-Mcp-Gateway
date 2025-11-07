@@ -6,6 +6,7 @@ Este documento descreve o plano detalhado para modificar o Docker MCP Gateway a 
 
 ## Objetivos
 
+
 1. Permitir execução com Docker Engine nativo do Linux
 2. Implementar gerenciamento de segredos alternativo
 3. Desabilitar monitor OAuth quando não disponível
@@ -22,6 +23,7 @@ Este documento descreve o plano detalhado para modificar o Docker MCP Gateway a 
 **Linhas:** 13-33
 
 **Implementação:**
+
 ```go
 func getDockerDesktopPaths() (DockerDesktopPaths, error) {
     // Se estiver em modo contêiner ou modo nativo, retornar paths vazios
@@ -55,6 +57,7 @@ func getDockerDesktopPaths() (DockerDesktopPaths, error) {
 **Linhas:** 48-57
 
 **Implementação:**
+
 ```go
 PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
     cmd.SetContext(ctx)
@@ -85,6 +88,7 @@ PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 **Arquivo novo:** `pkg/docker/secrets_native.go`
 
 **Implementação:**
+
 ```go
 package docker
 
@@ -148,6 +152,7 @@ func (c *dockerClient) readSecretsFromEnv(ctx context.Context, names []string) (
 **Linhas:** 45-94
 
 **Implementação:**
+
 ```go
 func (c *dockerClient) readSecrets(ctx context.Context, names []string) (map[string]string, error) {
     // Se estiver em modo contêiner ou modo nativo, usar método alternativo
@@ -181,6 +186,7 @@ func (c *dockerClient) readSecretsAlternative(ctx context.Context, names []strin
 **Linhas:** 272-296
 
 **Implementação:**
+
 ```go
 // Linha 272-273: Modificar lógica de detecção
 inContainer := os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1"
@@ -207,6 +213,7 @@ if g.McpOAuthDcrEnabled && isDockerDesktop {
 **Linhas:** 334-341
 
 **Implementação:**
+
 ```go
 // Linha 334: Modificar condição de autenticação
 if (transport == "sse" || transport == "http" || transport == "streamable" || transport == "streaming" || transport == "streamable-http") && !inContainer && !nativeMode {
@@ -232,6 +239,7 @@ if (transport == "sse" || transport == "http" || transport == "streamable" || tr
 **Linhas:** 32-46
 
 **Implementação:**
+
 ```go
 // Linha 32: Modificar condição
 if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" || os.Getenv("DOCKER_MCP_NATIVE_MODE") == "1" {
@@ -257,6 +265,7 @@ if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" || os.Getenv("DOCKER_MCP_NATIVE_M
 **Linha:** 184
 
 **Implementação:**
+
 ```go
 runCmd.Flags().StringVar(&options.SecretsPath, "secrets", options.SecretsPath, "Colon separated paths to search for secrets. Can be `docker-desktop`, `file:./.env` for local files, or environment variables")
 ```
@@ -269,6 +278,7 @@ runCmd.Flags().StringVar(&options.SecretsPath, "secrets", options.SecretsPath, "
 **Após linha 70**
 
 **Implementação:**
+
 ```go
 // IsNativeDockerEngine verifica se está rodando em Docker Engine nativo
 func IsNativeDockerEngine(ctx context.Context, dockerCli command.Cli) (bool, error) {
@@ -288,21 +298,25 @@ func IsNativeDockerEngine(ctx context.Context, dockerCli command.Cli) (bool, err
 ## Variáveis de Ambiente
 
 ### Novas Variáveis
-- `DOCKER_MCP_NATIVE_MODE=1`: Ativa modo nativo para Docker Engine
-- `DOCKER_MCP_SECRETS_FILE=./.env`: Caminho para arquivo de segredos
+
+* `DOCKER_MCP_NATIVE_MODE=1`: Ativa modo nativo para Docker Engine
+* `DOCKER_MCP_SECRETS_FILE=./.env`: Caminho para arquivo de segredos
 
 ### Variáveis Existentes (Mantidas)
-- `DOCKER_MCP_IN_CONTAINER=1`: Mantém comportamento atual para contêineres
+
+* `DOCKER_MCP_IN_CONTAINER=1`: Mantém comportamento atual para contêineres
 
 ## Testes
 
 ### Teste 1: Modo Nativo Básico
+
 ```bash
 export DOCKER_MCP_NATIVE_MODE=1
 docker mcp gateway run --dry-run
 ```
 
 ### Teste 2: Segredos via Arquivo
+
 ```bash
 export DOCKER_MCP_NATIVE_MODE=1
 export DOCKER_MCP_SECRETS_FILE=./test-secrets.env
@@ -311,6 +325,7 @@ docker mcp gateway run --dry-run
 ```
 
 ### Teste 3: Segredos via Ambiente
+
 ```bash
 export DOCKER_MCP_NATIVE_MODE=1
 export TEST_SECRET=test_value
@@ -320,18 +335,22 @@ docker mcp gateway run --dry-run
 ## Compatibilidade
 
 ### Mantida
-- Compatibilidade total com Docker Desktop
-- Funcionalidade existente em contêineres
-- Configurações personalizadas existentes
+
+* Compatibilidade total com Docker Desktop
+* Funcionalidade existente em contêineres
+* Configurações personalizadas existentes
 
 ### Adicionada
-- Suporte a Docker Engine nativo no Linux
-- Gerenciamento de segredos via arquivos locais
-- Operação sem dependências do Docker Desktop
+
+* Suporte a Docker Engine nativo no Linux
+* Gerenciamento de segredos via arquivos locais
+* Operação sem dependências do Docker Desktop
 
 ## Rollback
 
 Caso necessário, as modificações podem ser revertidas:
+
+
 1. Remover verificações de `DOCKER_MCP_NATIVE_MODE`
 2. Restaurar código original de gerenciamento de segredos
 3. Reverter modificações no gateway
@@ -339,6 +358,8 @@ Caso necessário, as modificações podem ser revertidas:
 ## Documentação
 
 ### Atualizações Necessárias
+
+
 1. README.md: Adicionar instruções para modo nativo
 2. docs/troubleshooting.md: Adicionar problemas comuns do modo nativo
 3. docs/self-configured.md: Documentar configuração de segredos locais
@@ -346,6 +367,8 @@ Caso necessário, as modificações podem ser revertidas:
 ## Implantação
 
 ### Passos
+
+
 1. Aplicar modificações fase por fase
 2. Testar cada fase individualmente
 3. Executar testes de integração completos
@@ -353,7 +376,12 @@ Caso necessário, as modificações podem ser revertidas:
 5. Release com notas de versão
 
 ### Migração
+
 Para usuários existentes:
+
+
 1. Nenhuma ação necessária (compatibilidade mantida)
 2. Opcional: migrar para modo nativo se desejado
 3. Configurar variáveis de ambiente conforme necessário
+
+

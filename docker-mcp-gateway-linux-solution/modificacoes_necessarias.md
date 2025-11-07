@@ -3,10 +3,11 @@
 ## Análise Geral
 
 O Docker MCP Gateway atualmente depende fortemente do Docker Desktop para várias funcionalidades, incluindo:
-- Verificação de recursos do Docker Desktop
-- Gerenciamento de segredos via sockets específicos
-- Monitoramento OAuth via backend socket
-- Autenticação via credential helper do Docker Desktop
+
+* Verificação de recursos do Docker Desktop
+* Gerenciamento de segredos via sockets específicos
+* Monitoramento OAuth via backend socket
+* Autenticação via credential helper do Docker Desktop
 
 ## Arquivos e Linhas que Precisam ser Modificados
 
@@ -240,39 +241,51 @@ func IsNativeDockerEngine(ctx context.Context, dockerCli command.Cli) (bool, err
 ## Plano de Implementação
 
 ### Fase 1: Modificações Básicas
+
+
 1. Modificar `pkg/desktop/sockets_linux.go` para ignorar verificação do Docker Desktop
 2. Modificar `cmd/docker-mcp/commands/root.go` para pular verificação em modo nativo
 3. Adicionar variável de ambiente `DOCKER_MCP_NATIVE_MODE=1`
 
 ### Fase 2: Gerenciamento de Segredos
+
+
 1. Modificar `pkg/docker/secrets.go` para usar método alternativo
 2. Implementar `pkg/docker/secrets_native.go` com leitura de arquivos .env
 3. Modificar `cmd/docker-mcp/commands/gateway.go` para usar segredos locais
 
 ### Fase 3: OAuth e Autenticação
+
+
 1. Modificar `pkg/gateway/run.go` para desabilitar OAuth em modo nativo
 2. Implementar autenticação alternativa se necessária
 3. Modificar fluxos de autenticação para modo nativo
 
 ### Fase 4: Configurações Padrão
+
+
 1. Modificar configurações padrão em `cmd/docker-mcp/commands/gateway.go`
 2. Atualizar documentação e textos de ajuda
 3. Testar integração completa
 
 ## Variáveis de Ambiente
 
-- `DOCKER_MCP_IN_CONTAINER=1`: Mantém comportamento atual para contêineres
-- `DOCKER_MCP_NATIVE_MODE=1`: Novo modo para Docker Engine nativo
-- `DOCKER_MCP_SECRETS_FILE`: Caminho para arquivo de segredos alternativo
+* `DOCKER_MCP_IN_CONTAINER=1`: Mantém comportamento atual para contêineres
+* `DOCKER_MCP_NATIVE_MODE=1`: Novo modo para Docker Engine nativo
+* `DOCKER_MCP_SECRETS_FILE`: Caminho para arquivo de segredos alternativo
 
 ## Compatibilidade
 
 As modificações mantêm compatibilidade com:
-- Instalações existentes do Docker Desktop
-- Modo contêiner atual
-- Configurações personalizadas existentes
+
+* Instalações existentes do Docker Desktop
+* Modo contêiner atual
+* Configurações personalizadas existentes
 
 As novas funcionalidades adicionam suporte para:
-- Docker Engine nativo no Linux
-- Gerenciamento de segredos via arquivos locais
-- Operação sem dependências do Docker Desktop
+
+* Docker Engine nativo no Linux
+* Gerenciamento de segredos via arquivos locais
+* Operação sem dependências do Docker Desktop
+
+
