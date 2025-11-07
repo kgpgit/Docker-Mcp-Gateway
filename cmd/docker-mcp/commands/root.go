@@ -45,7 +45,7 @@ func Root(ctx context.Context, cwd string, dockerCli command.Cli) *cobra.Command
 				return err
 			}
 
-			if os.Getenv("DOCKER_MCP_IN_CONTAINER") != "1" {
+			if os.Getenv("DOCKER_MCP_IN_CONTAINER") != "1" && os.Getenv("DOCKER_MCP_NATIVE_MODE") != "1" {
 				runningInDockerCE, err := docker.RunningInDockerCE(ctx, dockerCli)
 				if err != nil {
 					return err

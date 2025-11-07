@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -43,6 +44,11 @@ func (c *dockerClient) ReadSecrets(ctx context.Context, names []string, lenient 
 }
 
 func (c *dockerClient) readSecrets(ctx context.Context, names []string) (map[string]string, error) {
+	// Se estiver em modo contêiner ou modo nativo, usar método alternativo
+	if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" || os.Getenv("DOCKER_MCP_NATIVE_MODE") == "1" {
+		return c.readSecretsAlternative(ctx, names)
+	}
+
 	flags := []string{"--network=none", "--pull=never"}
 	var command []string
 
@@ -109,4 +115,46 @@ func (c *dockerClient) readSecretsOneByOneOptional(ctx context.Context, names []
 	}
 
 	return secrets, nil
+}
+
+// readSecretsAlternative lê segredos de arquivos ou variáveis de ambiente para modo nativo
+func (c *dockerClient) readSecretsAlternative(ctx context.Context, names []string) (map[string]string, error) {
+	values := map[string]string{}
+
+	// Tentar ler de arquivo se especificado
+	if secretsFile := os.Getenv("DOCKER_MCP_SECRETS_FILE"); secretsFile != "" {
+		file, err := os.Open(secretsFile)
+		if err == nil {
+			defer file.Close()
+			scanner := bufio.NewScanner(file)
+			for scanner.Scan() {
+				line := strings.TrimSpace(scanner.Text())
+				if line == "" || strings.HasPrefix(line, "#") {
+					continue
+				}
+				parts := strings.SplitN(line, "=", 2)
+				if len(parts) == 2 {
+					key := strings.TrimSpace(parts[0])
+					value := strings.TrimSpace(parts[1])
+					for _, name := range names {
+						if key == name {
+							values[name] = value
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Complementar com variáveis de ambiente
+	for _, name := range names {
+		if _, exists := values[name]; !exists {
+			if envValue := os.Getenv(name); envValue != "" {
+				values[name] = envValue
+			}
+		}
+	}
+
+	return values, nil
 }

@@ -29,12 +29,13 @@ func gatewayCommand(docker docker.Client, dockerCli command.Cli) *cobra.Command 
 	var additionalToolsConfig []string
 	var mcpRegistryUrls []string
 	var enableAllServers bool
-	if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" {
-		// In-container.
+	if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" || os.Getenv("DOCKER_MCP_NATIVE_MODE") == "1" {
+		// In-container or native mode.
 		// Note: The catalog URL will be updated after checking the feature flag in RunE
 		options = gateway.Config{
-			CatalogPath: []string{catalog.DockerCatalogURLV2}, // Default to v2, will be updated based on flag
-			SecretsPath: "docker-desktop:/run/secrets/mcp_secret:/.env",
+			CatalogPath:  []string{catalog.DockerCatalogURLV2}, // Default to v2, will be updated based on flag
+			RegistryPath: []string{"registry.yaml"},            // Add registry path to read enabled servers
+			SecretsPath:  "file:./.env",                        // Usar arquivo local em vez de docker-desktop
 			Options: gateway.Options{
 				Cpus:         1,
 				Memory:       "2Gb",
@@ -181,7 +182,7 @@ func gatewayCommand(docker docker.Client, dockerCli command.Cli) *cobra.Command 
 	runCmd.Flags().StringSliceVar(&additionalConfigs, "additional-config", nil, "Additional config paths to merge with the default config.yaml")
 	runCmd.Flags().StringSliceVar(&options.ToolsPath, "tools-config", options.ToolsPath, "Paths to the tools files (absolute or relative to ~/.docker/mcp/)")
 	runCmd.Flags().StringSliceVar(&additionalToolsConfig, "additional-tools-config", nil, "Additional tools paths to merge with the default tools.yaml")
-	runCmd.Flags().StringVar(&options.SecretsPath, "secrets", options.SecretsPath, "Colon separated paths to search for secrets. Can be `docker-desktop` or a path to a .env file (default to using Docker Desktop's secrets API)")
+	runCmd.Flags().StringVar(&options.SecretsPath, "secrets", options.SecretsPath, "Colon separated paths to search for secrets. Can be `docker-desktop`, `file:./.env` for local files, or environment variables")
 	runCmd.Flags().StringSliceVar(&options.ToolNames, "tools", options.ToolNames, "List of tools to enable")
 	runCmd.Flags().StringArrayVar(&options.Interceptors, "interceptor", options.Interceptors, "List of interceptors to use (format: when:type:path, e.g. 'before:exec:/bin/path')")
 	runCmd.Flags().StringArrayVar(&options.OciRef, "oci-ref", options.OciRef, "OCI image references to use")

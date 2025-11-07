@@ -10,6 +10,18 @@ import (
 )
 
 func getDockerDesktopPaths() (DockerDesktopPaths, error) {
+	// Se estiver em modo contêiner ou modo nativo, retornar paths vazios
+	if os.Getenv("DOCKER_MCP_IN_CONTAINER") == "1" || os.Getenv("DOCKER_MCP_NATIVE_MODE") == "1" {
+		return DockerDesktopPaths{
+			AdminSettingPath:     "",
+			BackendSocket:        "",
+			RawDockerSocket:      "",
+			JFSSocket:            "",
+			ToolsSocket:          "",
+			CredentialHelperPath: func() string { return "" },
+		}, nil
+	}
+
 	_, err := os.Stat("/run/host-services/backend.sock")
 	if err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
