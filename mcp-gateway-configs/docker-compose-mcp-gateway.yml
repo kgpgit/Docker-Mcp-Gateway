@@ -1,0 +1,287 @@
+# Docker Compose para Docker MCP Gateway
+# Use este arquivo para iniciar o MCP Gateway com configurações pré-definidas
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # SERVIÇO PRINCIPAL - MCP GATEWAY
+  # =============================================================================
+  gateway:
+    image: docker/mcp-gateway:latest
+    container_name: docker-mcp-gateway
+    restart: unless-stopped
+    
+    # Monta o socket do Docker para o container
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    
+    # Portas para diferentes transportes
+    ports:
+      - "8080:8080"   # Streaming transport
+      - "8081:8081"   # SSE transport
+    
+    # Configuração do gateway
+    command:
+      - --servers=duckduckgo,github,wikipedia,filesystem
+      - --verbose=false
+      - --log-calls=true
+      - --transport=stdio
+    
+    # Variáveis de ambiente
+    environment:
+      - DOCKER_MCP_LOG_LEVEL=${DOCKER_MCP_LOG_LEVEL:-info}
+      - DOCKER_MCP_CONFIG_PATH=${DOCKER_MCP_CONFIG_PATH:-/root/.docker/mcp/config.yaml}
+      - DOCKER_MCP_CATALOG_PATH=${DOCKER_MCP_CATALOG_PATH:-/root/.docker/mcp/catalogs/docker-mcp.yaml}
+      - DOCKER_MCP_REGISTRY_PATH=${DOCKER_MCP_REGISTRY_PATH:-/root/.docker/mcp/registry.yaml}
+    
+    # Secrets (se configurados)
+    secrets:
+      - mcp_secrets
+    
+    # Configurações (se necessário)
+    configs:
+      - mcp_configs
+    
+    # Limites de recursos
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "docker", "mcp", "version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  
+  # =============================================================================
+  # SERVIÇO OPCIONAL - GATEWAY COM TRANSPORTE STREAMING
+  # =============================================================================
+  gateway-streaming:
+    image: docker/mcp-gateway:latest
+    container_name: docker-mcp-gateway-streaming
+    restart: unless-stopped
+    profiles:
+      - streaming  # Use: docker-compose --profile streaming up
+    
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    
+    ports:
+      - "8080:8080"
+    
+    command:
+      - --transport=streaming
+      - --port=8080
+      - --servers=duckduckgo,github,wikipedia,filesystem
+      - --verbose=false
+      - --log-calls=true
+    
+    environment:
+      - DOCKER_MCP_LOG_LEVEL=${DOCKER_MCP_LOG_LEVEL:-info}
+    
+    secrets:
+      - mcp_secrets
+    
+    configs:
+      - mcp_configs
+  
+  # =============================================================================
+  # SERVIÇO OPCIONAL - GATEWAY COM TRANSPORTE SSE
+  # =============================================================================
+  gateway-sse:
+    image: docker/mcp-gateway:latest
+    container_name: docker-mcp-gateway-sse
+    restart: unless-stopped
+    profiles:
+      - sse  # Use: docker-compose --profile sse up
+    
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    
+    ports:
+      - "8081:8081"
+    
+    command:
+      - --transport=sse
+      - --port=8081
+      - --servers=duckduckgo,github,wikipedia,filesystem
+      - --verbose=false
+      - --log-calls=true
+    
+    environment:
+      - DOCKER_MCP_LOG_LEVEL=${DOCKER_MCP_LOG_LEVEL:-info}
+    
+    secrets:
+      - mcp_secrets
+    
+    configs:
+      - mcp_configs
+  
+  # =============================================================================
+  # SERVIÇO OPCIONAL - BANCO DE DADOS POSTGRESQL
+  # =============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: mcp-postgres
+    restart: unless-stopped
+    profiles:
+      - database  # Use: docker-compose --profile database up
+    
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-mcpdb}
+      - POSTGRES_USER=${POSTGRES_USER:-mcpuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mcppassword}
+      - POSTGRES_CONNECTION_STRING=postgresql://${POSTGRES_USER:-mcpuser}:${POSTGRES_PASSWORD:-mcppassword}@postgres:5432/${POSTGRES_DB:-mcpdb}
+    
+    ports:
+      - "5432:5432"
+    
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mcpuser} -d ${POSTGRES_DB:-mcpdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  # =============================================================================
+  # SERVIÇO OPCIONAL - BANCO DE DADOS NEO4J
+  # =============================================================================
+  neo4j:
+    image: neo4j:5-community
+    container_name: mcp-neo4j
+    restart: unless-stopped
+    profiles:
+      - database  # Use: docker-compose --profile database up
+    
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-neo4jpassword}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+    
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "${NEO4J_PASSWORD:-neo4jpassword}", "RETURN 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+# =============================================================================
+# VOLUMES PERSISTENTES
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  neo4j_import:
+    driver: local
+  neo4j_plugins:
+    driver: local
+
+# =============================================================================
+# CONFIGS E SECRETS
+# =============================================================================
+configs:
+  mcp_configs:
+    file: ./mcp-configs/mcp-configs.yaml  # Arquivo de configuração opcional
+
+secrets:
+  mcp_secrets:
+    file: ./mcp-configs/.env  # Arquivo com variáveis de ambiente e secrets
+
+# =============================================================================
+# REDES
+# =============================================================================
+networks:
+  default:
+    name: mcp-gateway-network
+    driver: bridge
+
+# =============================================================================
+# INSTRUÇÕES DE USO
+# =============================================================================
+
+# 1. Configuração básica:
+#    docker-compose up -d gateway
+#
+# 2. Com transporte streaming:
+#    docker-compose --profile streaming up -d gateway-streaming
+#
+# 3. Com transporte SSE:
+#    docker-compose --profile sse up -d gateway-sse
+#
+# 4. Com bancos de dados:
+#    docker-compose --profile database up -d postgres neo4j
+#
+# 5. Todos os serviços:
+#    docker-compose --profile streaming --profile sse --profile database up -d
+#
+# 6. Parar todos os serviços:
+#    docker-compose down
+#
+# 7. Remover volumes (cuidado - perde dados):
+#    docker-compose down -v
+#
+# 8. Verificar logs:
+#    docker-compose logs -f gateway
+#
+# 9. Executar comandos no container:
+#    docker-compose exec gateway docker mcp tools ls
+#
+# =============================================================================
+# VARIÁVEIS DE AMBIENTE
+# =============================================================================
+#
+# Crie um arquivo .env com as variáveis necessárias:
+# cp mcp-configs/.env.example mcp-configs/.env
+#
+# Variáveis disponíveis:
+# - DOCKER_MCP_LOG_LEVEL (info, debug, warn, error)
+# - DOCKER_MCP_CONFIG_PATH
+# - DOCKER_MCP_CATALOG_PATH
+# - DOCKER_MCP_REGISTRY_PATH
+# - POSTGRES_DB
+# - POSTGRES_USER
+# - POSTGRES_PASSWORD
+# - NEO4J_PASSWORD
+#
+# =============================================================================
+# PORTAS UTILIZADAS
+# =============================================================================
+#
+# - 8080: Gateway com transporte streaming
+# - 8081: Gateway com transporte SSE
+# - 5432: PostgreSQL
+# - 7474: Neo4j HTTP
+# - 7687: Neo4j Bolt
+#
+# =============================================================================
+# ENDPOINTS DE CONEXÃO
+# =============================================================================
+#
+# - Streaming: http://localhost:8080/mcp
+# - SSE: http://localhost:8081/sse
+# - Neo4j Browser: http://localhost:7474
+# - PostgreSQL: localhost:5432
+#

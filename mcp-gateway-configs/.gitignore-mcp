@@ -1,0 +1,290 @@
+# =============================================================================
+# .GITIGNORE PARA DOCKER MCP GATEWAY
+# =============================================================================
+# Use este arquivo para complementar seu .gitignore existente
+# Copie ou adicione estas regras ao seu .gitignore principal
+
+# =============================================================================
+# ARQUIVOS SENSÍVEIS
+# =============================================================================
+# Arquivo de variáveis de ambiente (contém secrets)
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# Arquivos de configuração com dados sensíveis
+mcp-secrets.yaml
+mcp-secrets.json
+secrets.yaml
+secrets.json
+
+# Arquivos de log
+*.log
+logs/
+mcp-logs/
+
+# =============================================================================
+# ARQUIVOS DE CONFIGURAÇÃO TEMPORÁRIOS
+# =============================================================================
+# Configurações geradas automaticamente
+config-generated.yaml
+config-generated.json
+catalog-generated.yaml
+catalog-generated.json
+registry-generated.yaml
+registry-generated.json
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
+
+# =============================================================================
+# DADOS TEMPORÁRIOS E CACHE
+# =============================================================================
+# Diretórios temporários
+tmp/
+temp/
+.tmp/
+.cache/
+
+# Arquivos de cache do MCP
+.mcp-cache/
+.mcp-temp/
+
+# =============================================================================
+# CHAVES E CERTIFICADOS
+# =============================================================================
+# Chaves SSH
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Certificados
+*.cert
+*.cer
+*.der
+
+# Arquivos de autenticação
+auth.json
+auth.yaml
+credentials.json
+credentials.yaml
+
+# =============================================================================
+# BANCOS DE DADOS LOCAIS
+# =============================================================================
+# Arquivos de banco de dados SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Diretórios de dados de bancos de dados
+data/
+db-data/
+postgres-data/
+neo4j-data/
+mysql-data/
+
+# =============================================================================
+# SECRETS E TOKENS
+# =============================================================================
+# Tokens de acesso
+token.txt
+token.json
+github-token.txt
+github-token.json
+api-key.txt
+api-key.json
+
+# Arquivos de senha
+password.txt
+password.json
+secrets.txt
+secrets.json
+
+# =============================================================================
+# CONFIGURAÇÕES ESPECÍFICAS DO USUÁRIO
+# =============================================================================
+# Configurações pessoais do MCP Gateway
+.docker/
+~/.docker/
+docker-mcp-user-config.yaml
+docker-mcp-user-config.json
+
+# Catálogos e registros personalizados
+docker-mcp-user-catalog.yaml
+docker-mcp-user-registry.yaml
+
+# =============================================================================
+# ARQUIVOS DE ESTADO E LOCK
+# =============================================================================
+# Arquivos de estado
+.state/
+.lock/
+*.lock
+*.state
+
+# Arquivos PID
+*.pid
+
+# =============================================================================
+# LOGS E DEBUG
+# =============================================================================
+# Logs de debug
+debug.log
+debug-*.log
+verbose.log
+verbose-*.log
+
+# Logs de erro
+error.log
+error-*.log
+
+# Logs de acesso
+access.log
+access-*.log
+
+# =============================================================================
+# RELATÓRIOS E MÉTRICAS
+# =============================================================================
+# Relatórios de uso
+usage-report.json
+usage-report.yaml
+metrics.json
+metrics.yaml
+
+# Arquivos de telemetria
+telemetry.json
+telemetry.yaml
+
+# =============================================================================
+# ARQUIVOS DE TESTE E DESENVOLVIMENTO
+# =============================================================================
+# Arquivos de teste temporários
+test-output/
+test-results/
+coverage/
+
+# Arquivos de desenvolvimento
+dev-config.yaml
+dev-config.json
+local-config.yaml
+local-config.json
+
+# =============================================================================
+# BACKUPS E EXPORTAÇÕES
+# =============================================================================
+# Backups de configuração
+backup-*.yaml
+backup-*.json
+export-*.yaml
+export-*.json
+
+# Snapshots
+snapshot-*.tar.gz
+snapshot-*.zip
+
+# =============================================================================
+# IDE E EDITORES
+# =============================================================================
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =============================================================================
+# SISTEMAS OPERACIONAIS
+# =============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# DOCUMENTAÇÃO TEMPORÁRIA
+# =============================================================================
+# Documentos gerados
+docs/generated/
+docs/temp/
+docs/draft/
+
+# Arquivos de construção
+build/
+dist/
+target/
+out/
+
+# =============================================================================
+# EXEMPLOS DE USO (NÃO COMMITAR EXEMPLOS PERSONALIZADOS)
+# =============================================================================
+# Exemplos personalizados
+my-mcp-config.yaml
+my-mcp-config.json
+custom-compose.yml
+custom-dockerfile
+
+# =============================================================================
+# NOTAS
+# =============================================================================
+# 1. Este arquivo deve ser usado como complemento ao .gitignore principal do projeto
+# 2. Adicione apenas as regras que fazem sentido para o seu fluxo de trabalho
+# 3. Nunca commit arquivos .env ou outros arquivos contendo secrets
+# 4. Revise regularmente as regras para garantir que estão adequadas ao seu projeto
+# 5. Para projetos públicos, considere usar ferramentas como git-secrets ou truffleHog
+#
+# =============================================================================
+# REFERÊNCIAS
+# =============================================================================
+# - Gitignore documentation: https://git-scm.com/docs/gitignore
+# - Docker MCP Gateway docs: ./docs/
+# - Security best practices: ./docs/security.md

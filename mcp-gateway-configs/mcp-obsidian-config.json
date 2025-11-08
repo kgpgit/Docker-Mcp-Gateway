@@ -1,0 +1,327 @@
+{
+  "_comment": "Configuração MCP específica para acesso aos arquivos do Obsidian",
+  "_version": "1.0.0",
+  "_description": "Configuração personalizada para acessar vaults do Obsidian via servidor filesystem",
+  "_created": "2025-11-08T03:43:00Z",
+  "_obsidian_path": "/home/carlos/Documentos/Obsidian's",
+
+  "configurations": {
+    "claude_desktop": {
+      "_comment": "Configuração para Claude Desktop com acesso ao Obsidian",
+      "_description": "Adicione esta configuração ao seu claude_desktop_config.json",
+      "mcpServers": {
+        "docker-mcp-gateway-obsidian": {
+          "command": "docker",
+          "args": [
+            "mcp",
+            "gateway",
+            "run",
+            "--servers=filesystem",
+            "--verbose=false",
+            "--log-calls=true",
+            "--transport=stdio"
+          ],
+          "env": {
+            "DOCKER_MCP_LOG_LEVEL": "info",
+            "DOCKER_MCP_OPTIMIZATION": "obsidian",
+            "DOCKER_MCP_NATIVE_MODE": "1",
+            "OBSIDIAN_VAULTS_PATH": "/home/carlos/Documentos/Obsidian's"
+          },
+          "_description": "Configuração otimizada para acesso aos vaults do Obsidian",
+          "_resource_count": 6,
+          "_vaults_available": [
+            "Obsidian_Business",
+            "Obsidian_Develops", 
+            "Obsidian_Pessoal",
+            "Obsidian_Sinobras"
+          ]
+        }
+      }
+    },
+
+    "vscode": {
+      "_comment": "Configuração para VS Code com acesso ao Obsidian",
+      "_description": "Adicione esta configuração ao settings.json do VS Code",
+      "mcp.servers": {
+        "docker-mcp-gateway-obsidian": {
+          "command": "docker",
+          "args": [
+            "mcp",
+            "gateway",
+            "run",
+            "--servers=filesystem",
+            "--mount=/home/carlos/Documentos/Obsidian's:/obsidian"
+          ],
+          "env": {
+            "DOCKER_MCP_LOG_LEVEL": "info",
+            "DOCKER_MCP_OPTIMIZATION": "obsidian-vscode",
+            "DOCKER_MCP_NATIVE_MODE": "1",
+            "OBSIDIAN_VAULTS_PATH": "/home/carlos/Documentos/Obsidian's"
+          }
+        }
+      }
+    },
+
+    "other_agents": {
+      "_comment": "Configurações para outros agentes de IA",
+      "_description": "Exemplos para diferentes agentes e frameworks",
+      "cursor": {
+        "command": "docker",
+        "args": [
+          "mcp",
+          "gateway",
+          "run",
+          "--servers=filesystem",
+          "--mount=/home/carlos/Documentos/Obsidian's:/obsidian"
+        ],
+        "env": {
+          "DOCKER_MCP_OPTIMIZATION": "obsidian-cursor",
+          "DOCKER_MCP_NATIVE_MODE": "1"
+        }
+      },
+      "continue": {
+        "command": "docker",
+        "args": [
+          "mcp",
+          "gateway",
+          "run",
+          "--transport=streaming",
+          "--port=8080",
+          "--servers=filesystem",
+          "--mount=/home/carlos/Documentos/Obsidian's:/obsidian"
+        ],
+        "env": {
+          "DOCKER_MCP_OPTIMIZATION": "obsidian-continue",
+          "DOCKER_MCP_NATIVE_MODE": "1"
+        }
+      },
+      "zed": {
+        "command": "docker",
+        "args": [
+          "mcp",
+          "gateway",
+          "run",
+          "--servers=filesystem",
+          "--mount=/home/carlos/Documentos/Obsidian's:/obsidian"
+        ],
+        "env": {
+          "DOCKER_MCP_OPTIMIZATION": "obsidian-zed",
+          "DOCKER_MCP_NATIVE_MODE": "1"
+        }
+      }
+    }
+  },
+
+  "obsidian_vaults": {
+    "_comment": "Informações detalhadas dos vaults do Obsidian encontrados",
+    "_description": "Vaults disponíveis para acesso via MCP",
+    "_total_vaults": 4,
+    "_base_path": "/home/carlos/Documentos/Obsidian's",
+
+    "Obsidian_Business": {
+      "_description": "Vault para notas de negócios e trabalho",
+      "_path": "/home/carlos/Documentos/Obsidian's/Obsidian_Business",
+      "_has_plugins": true,
+      "_plugin_count": 32,
+      "_themes": ["Dracula for Obsidian", "Obsidian Nord Enhanced", "Obsidianite"],
+      "_special_features": ["DashBoards", "Scripts"],
+      "_estimated_files": "~100+ arquivos .md"
+    },
+
+    "Obsidian_Develops": {
+      "_description": "Vault para desenvolvimento e programação",
+      "_path": "/home/carlos/Documentos/Obsidian's/Obsidian_Develops",
+      "_has_plugins": true,
+      "_plugin_count": 32,
+      "_themes": ["Dracula for Obsidian", "Obsidian Nord Enhanced", "Obsidianite", "obsidian_ia", "Obsidianotion"],
+      "_special_features": ["DashBoards", "Scripts", "REST API"],
+      "_estimated_files": "~150+ arquivos .md"
+    },
+
+    "Obsidian_Pessoal": {
+      "_description": "Vault para notas pessoais",
+      "_path": "/home/carlos/Documentos/Obsidian's/Obsidian_Pessoal",
+      "_has_plugins": true,
+      "_plugin_count": 32,
+      "_themes": ["Dracula for Obsidian", "Obsidian Nord Enhanced", "Obsidianite", "obsidian_ia", "Obsidianotion"],
+      "_special_features": ["DashBoards", "Scripts", "Templates", "Programação"],
+      "_estimated_files": "~200+ arquivos .md"
+    },
+
+    "Obsidian_Sinobras": {
+      "_description": "Vault específico para projetos Sinobras",
+      "_path": "/home/carlos/Documentos/Obsidian's/Obsidian_Sinobras",
+      "_has_plugins": true,
+      "_plugin_count": 25,
+      "_themes": ["Dracula for Obsidian", "Obsidian Nord Enhanced", "Obsidianite"],
+      "_special_features": ["DashBoards", "OCR", "PDF Extraction"],
+      "_estimated_files": "~80+ arquivos .md"
+    }
+  },
+
+  "filesystem_server_config": {
+    "_comment": "Configuração específica do servidor filesystem para Obsidian",
+    "_description": "Parâmetros otimizados para acesso aos vaults do Obsidian",
+    "image": "mcp/filesystem:1.0.2",
+    "runtime_arguments": [
+      "--mount",
+      "type=bind,src=/home/carlos/Documentos/Obsidian's,dst=/obsidian"
+    ],
+    "package_arguments": [
+      "/obsidian"
+    ],
+    "environment_variables": {
+      "LOG_LEVEL": "info",
+      "OBSIDIAN_ACCESS": "enabled",
+      "VAULTS_ROOT": "/obsidian"
+    },
+    "tools": [
+      "read_file",
+      "write_file", 
+      "list_directory",
+      "create_directory",
+      "delete_file",
+      "move_file"
+    ],
+    "allowed_paths": [
+      "/obsidian/Obsidian_Business",
+      "/obsidian/Obsidian_Develops",
+      "/obsidian/Obsidian_Pessoal", 
+      "/obsidian/Obsidian_Sinobras"
+    ],
+    "restricted_paths": [
+      "/obsidian/*/.obsidian/plugins",
+      "/obsidian/*/.obsidian/themes"
+    ]
+  },
+
+  "usage_examples": {
+    "_comment": "Exemplos de uso para acessar arquivos do Obsidian",
+    "basic_access": {
+      "_description": "Acesso básico aos vaults do Obsidian",
+      "command": "docker mcp gateway run",
+      "flags": {
+        "--servers": "filesystem",
+        "--mount": "/home/carlos/Documentos/Obsidian's:/obsidian",
+        "--verbose": "false"
+      }
+    },
+    "vault_specific": {
+      "_description": "Acesso a um vault específico",
+      "command": "docker mcp gateway run",
+      "flags": {
+        "--servers": "filesystem",
+        "--mount": "/home/carlos/Documentos/Obsidian's/Obsidian_Pessoal:/obsidian-vault",
+        "--verbose": "true"
+      }
+    },
+    "with_search": {
+      "_description": "Acesso aos vaults com capacidades de pesquisa",
+      "command": "docker mcp gateway run",
+      "flags": {
+        "--servers": "filesystem,duckduckgo",
+        "--mount": "/home/carlos/Documentos/Obsidian's:/obsidian",
+        "--optimization": "obsidian-search"
+      }
+    }
+  },
+
+  "integration_workflows": {
+    "_comment": "Fluxos de trabalho integrados com Obsidian",
+    "research_workflow": {
+      "_description": "Pesquisa e anotações no Obsidian",
+      "servers": ["filesystem", "duckduckgo", "wikipedia-mcp"],
+      "steps": [
+        "Pesquisar informações externas",
+        "Ler notas existentes no vault",
+        "Criar novas notas com pesquisas",
+        "Organizar informações no vault pessoal"
+      ]
+    },
+    "development_workflow": {
+      "_description": "Documentação de desenvolvimento",
+      "servers": ["filesystem", "github", "context7"],
+      "steps": [
+        "Acessar repositórios GitHub",
+        "Documentar código no vault de desenvolvimento",
+        "Consultar documentação técnica",
+        "Criar tutoriais e guias"
+      ]
+    },
+    "business_workflow": {
+      "_description": "Gestão de conhecimento empresarial",
+      "servers": ["filesystem", "notion", "slack"],
+      "steps": [
+        "Sincronizar com Notion",
+        "Documentar reuniões e decisões",
+        "Compartilhar informações via Slack",
+        "Manter base de conhecimento atualizada"
+      ]
+    }
+  },
+
+  "security_considerations": {
+    "_comment": "Considerações de segurança para acesso ao Obsidian",
+    "data_privacy": {
+      "_description": "Proteção de dados pessoais e sensíveis",
+      "recommendations": [
+        "Evitar compartilhar informações pessoais sensíveis",
+        "Usar variáveis de ambiente para caminhos sensíveis",
+        "Restringir acesso a vaults específicos quando necessário",
+        "Monitorar logs de acesso aos arquivos"
+      ]
+    },
+    "access_control": {
+      "_description": "Controle de acesso aos vaults",
+      "allowed_operations": [
+        "Leitura de arquivos .md",
+        "Criação de novas notas",
+        "Organização de diretórios",
+        "Busca de conteúdo"
+      ],
+      "restricted_operations": [
+        "Modificação de arquivos de configuração .obsidian",
+        "Acesso a plugins e temas",
+        "Exclusão em massa de arquivos",
+        "Modificação de estrutura do vault"
+      ]
+    }
+  },
+
+  "troubleshooting": {
+    "_comment": "Solução de problemas comuns",
+    "common_issues": {
+      "vault_not_found": {
+        "problem": "Vault do Obsidian não encontrado",
+        "solution": "Verifique o caminho em OBSIDIAN_VAULTS_PATH e se os diretórios existem",
+        "command": "ls -la /home/carlos/Documentos/Obsidian's"
+      },
+      "permission_denied": {
+        "problem": "Permissão negada ao acessar arquivos",
+        "solution": "Verifique as permissões dos diretórios do Obsidian",
+        "command": "chmod -R 755 /home/carlos/Documentos/Obsidian's"
+      },
+      "mount_failed": {
+        "problem": "Falha no mount do Docker",
+        "solution": "Verifique se o caminho está correto e o Docker tem permissão",
+        "command": "docker run --rm -v /home/carlos/Documentos/Obsidian's:/test alpine ls /test"
+      }
+    }
+  },
+
+  "next_steps": {
+    "_comment": "Próximos passos para integração completa",
+    "immediate_actions": [
+      "Adicionar configuração ao seu cliente MCP preferido",
+      "Testar acesso aos vaults individuais",
+      "Verificar permissões de leitura/escrita",
+      "Configurar variáveis de ambiente adicionais se necessário"
+    ],
+    "advanced_features": [
+      "Integrar com servidores de pesquisa para busca contextual",
+      "Configurar sincronização automática com outros serviços",
+      "Implementar backup automático dos vaults",
+      "Criar fluxos de trabalho personalizados"
+    ]
+  }
+}
