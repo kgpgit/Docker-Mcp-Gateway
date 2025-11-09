@@ -6,13 +6,13 @@ Este documento explica como usar o arquivo `mcp-gateway-config.json` para config
 
 O arquivo `mcp-gateway-config.json` contém configurações pré-definidas para facilitar a integração do Docker MCP Gateway com diversos clientes MCP, incluindo:
 
-- Claude Desktop
-- VS Code
-- Cursor
-- Continue
-- Zed
-- LM Studio
-- Outros agentes de IA
+* Claude Desktop
+* VS Code
+* Cursor
+* Continue
+* Zed
+* LM Studio
+* Outros agentes de IA
 
 ## Configuração Rápida
 
@@ -65,37 +65,43 @@ Use a configuração apropriada da seção `other_agents` no arquivo `mcp-gatewa
 O arquivo de configuração inclui os seguintes servidores MCP pré-configurados:
 
 ### DuckDuckGo Search
-- **Nome**: `duckduckgo`
-- **Descrição**: Pesquisas web via DuckDuckGo
-- **Ferramentas**: `search`, `fetch_content`
+
+* **Nome**: `duckduckgo`
+* **Descrição**: Pesquisas web via DuckDuckGo
+* **Ferramentas**: `search`, `fetch_content`
 
 ### GitHub Integration
-- **Nome**: `github`
-- **Descrição**: Integração com GitHub
-- **Ferramentas**: `create_repository`, `list_repositories`, `get_repository`, `create_issue`, `list_issues`
-- **Requer**: `GITHUB_PERSONAL_ACCESS_TOKEN`
+
+* **Nome**: `github`
+* **Descrição**: Integração com GitHub
+* **Ferramentas**: `create_repository`, `list_repositories`, `get_repository`, `create_issue`, `list_issues`
+* **Requer**: `GITHUB_PERSONAL_ACCESS_TOKEN`
 
 ### Wikipedia
-- **Nome**: `wikipedia`
-- **Descrição**: Consultas enciclopédicas
-- **Ferramentas**: `search`, `get_page`, `get_summary`
+
+* **Nome**: `wikipedia`
+* **Descrição**: Consultas enciclopédicas
+* **Ferramentas**: `search`, `get_page`, `get_summary`
 
 ### Filesystem Operations
-- **Nome**: `filesystem`
-- **Descrição**: Operações de sistema de arquivos locais
-- **Ferramentas**: `read_file`, `write_file`, `list_directory`, `create_directory`, `delete_file`, `move_file`
+
+* **Nome**: `filesystem`
+* **Descrição**: Operações de sistema de arquivos locais
+* **Ferramentas**: `read_file`, `write_file`, `list_directory`, `create_directory`, `delete_file`, `move_file`
 
 ### PostgreSQL Database
-- **Nome**: `postgres`
-- **Descrição**: Operações com banco PostgreSQL
-- **Ferramentas**: `execute_query`, `list_tables`, `describe_table`, `insert_data`, `update_data`, `delete_data`
-- **Requer**: `POSTGRES_CONNECTION_STRING`
+
+* **Nome**: `postgres`
+* **Descrição**: Operações com banco PostgreSQL
+* **Ferramentas**: `execute_query`, `list_tables`, `describe_table`, `insert_data`, `update_data`, `delete_data`
+* **Requer**: `POSTGRES_CONNECTION_STRING`
 
 ### Neo4j Graph Database
-- **Nome**: `neo4j`
-- **Descrição**: Operações com banco Neo4j
-- **Ferramentas**: `execute_cypher`, `read_graph`, `write_graph`, `list_nodes`, `list_relationships`
-- **Requer**: `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`
+
+* **Nome**: `neo4j`
+* **Descrição**: Operações com banco Neo4j
+* **Ferramentas**: `execute_cypher`, `read_graph`, `write_graph`, `list_nodes`, `list_relationships`
+* **Requer**: `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`
 
 ## Configuração de Variáveis de Ambiente
 
@@ -217,23 +223,25 @@ docker mcp server inspect duckduckgo
 
 ### Problemas Comuns
 
+
 1. **Permissão negada ao acessar o socket do Docker**
+
    ```bash
    sudo usermod -aG docker $USER
    # Faça logout e login novamente
    ```
-
 2. **Servidor MCP não encontrado**
+
    ```bash
    docker mcp gateway run --verbose --dry-run --servers=nome_do_servidor
    ```
-
 3. **Conexão recusada**
+
    ```bash
    netstat -tlnp | grep :8080
    ```
-
 4. **Falha de autenticação**
+
    ```bash
    docker mcp gateway run --secrets=docker-desktop:./.env
    ```
@@ -278,6 +286,7 @@ docker mcp gateway run --working-set my-working-set
 
 O arquivo `mcp-gateway-config.json` está organizado nas seguintes seções:
 
+
 1. **configurations**: Configurações para diferentes clientes MCP
 2. **preconfigured_servers**: Definições dos servidores MCP disponíveis
 3. **environment_variables**: Variáveis de ambiente necessárias
@@ -289,6 +298,7 @@ O arquivo `mcp-gateway-config.json` está organizado nas seguintes seções:
 
 Para adicionar novos servidores ou configurações:
 
+
 1. Adicione o servidor à seção `preconfigured_servers`
 2. Inclua as variáveis de ambiente necessárias em `environment_variables`
 3. Adicione exemplos de uso em `usage_examples`
@@ -296,7 +306,9 @@ Para adicionar novos servidores ou configurações:
 
 ## Recursos Adicionais
 
-- [Documentação oficial do Docker MCP Gateway](docs/mcp-gateway.md)
-- [Guia de troubleshooting](docs/troubleshooting.md)
-- [Exemplos de configuração](examples/README.md)
-- [Fluxo de configuração](docs/config-flow.md)
+* [Documentação oficial do Docker MCP Gateway](docs/mcp-gateway.md)
+* [Guia de troubleshooting](docs/troubleshooting.md)
+* [Exemplos de configuração](examples/README.md)
+* [Fluxo de configuração](docs/config-flow.md)
+
+

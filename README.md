@@ -51,7 +51,7 @@ The MCP cli will already be installed on recent versions of Docker Desktop but y
 
 ```bash
 # Clone the repository
-git clone https://github.com/docker/mcp-gateway.git
+git clone https://github.com/kgpgit/Docker-Mcp-Gateway-Linux.git
 cd mcp-gateway
 mkdir -p "$HOME/.docker/cli-plugins/"
 
@@ -206,6 +206,148 @@ AI Client → MCP Gateway → MCP Servers (Docker Containers)
 * **MCP Servers**: Individual MCP servers running in Docker containers
 
 See [docs/message-flow.md](docs/message-flow.md) for detailed message flow diagrams.
+
+## Exemplos de Uso
+
+### Execução Básica (stdio)
+
+```bash
+docker mcp gateway run --servers=duckduckgo,github,wikipedia,filesystem
+```
+
+### Execução com Transporte Streaming
+
+```bash
+docker mcp gateway run --transport=streaming --port=8080 --servers=duckduckgo,github,wikipedia,filesystem
+```
+
+### Execução com Transporte SSE
+
+```bash
+docker mcp gateway run --transport=sse --port=8081 --servers=duckduckgo,github,wikipedia,filesystem
+```
+
+### Execução com Secrets
+
+```bash
+docker mcp gateway run --servers=github,postgres --secrets=docker-desktop:./.env
+```
+
+### Execução via Docker Compose
+
+Crie um arquivo `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+services:
+  gateway:
+    image: docker/mcp-gateway
+    command:
+      - --servers=duckduckgo,github,wikipedia,filesystem
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+```
+
+Execute com:
+
+```bash
+docker-compose up
+```
+
+## Troubleshooting
+
+### Verificar Configuração
+
+```bash
+# Modo de teste para verificar configuração
+docker mcp gateway run --verbose --dry-run
+```
+
+### Listar Ferramentas
+
+```bash
+# Listar todas as ferramentas disponíveis
+docker mcp tools ls --verbose
+```
+
+### Testar Ferramenta Específica
+
+```bash
+# Testar uma ferramenta específica
+docker mcp tools call --gateway-arg="--servers=duckduckgo" --verbose search query=Docker
+```
+
+### Inspecionar Servidor
+
+```bash
+# Inspecionar um servidor específico
+docker mcp server inspect duckduckgo
+```
+
+### Problemas Comuns
+
+
+1. **Permissão negada ao acessar o socket do Docker**
+
+   ```bash
+   sudo usermod -aG docker $USER
+   # Faça logout e login novamente
+   ```
+2. **Servidor MCP não encontrado**
+
+   ```bash
+   docker mcp gateway run --verbose --dry-run --servers=nome_do_servidor
+   ```
+3. **Conexão recusada**
+
+   ```bash
+   netstat -tlnp | grep :8080
+   ```
+4. **Falha de autenticação**
+
+   ```bash
+   docker mcp gateway run --secrets=docker-desktop:./.env
+   ```
+
+## Configuração Avançada
+
+### Limites de Recursos
+
+```bash
+# Configurar CPUs e memória para servidores MCP
+docker mcp gateway run --cpus=2 --memory=4Gb --servers=duckduckgo
+```
+
+### Opções de Segurança
+
+```bash
+# Bloquear acesso à rede
+docker mcp gateway run --block-network --servers=duckduckgo
+
+# Verificar assinaturas de imagens
+docker mcp gateway run --verify-signatures --servers=duckduckgo
+```
+
+### Interceptores
+
+```bash
+# Adicionar interceptores
+docker mcp gateway run --interceptor=before:exec:/bin/path --servers=duckduckgo
+```
+
+### Working Sets
+
+```bash
+# Habilitar feature de working sets
+docker mcp feature enable working-sets
+
+# Usar working set específico
+docker mcp gateway run --working-set my-working-set
+```
+
+## 
 
 ## Contributing
 

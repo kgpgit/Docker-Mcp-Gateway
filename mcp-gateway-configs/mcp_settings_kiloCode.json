@@ -1,0 +1,322 @@
+{
+  "mcpServers": {
+    "docker-mcp-gateway-full": {
+      "_comment": "Configuração completa otimizada com todos os 14 servidores principais",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=duckduckgo,wikipedia-mcp,brave,github,filesystem,kubernetes,context7,postgres,redis,clickhouse,sqlite-mcp-server,slack,mcp-discord,notion",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração completa com todos os servidores principais organizados por categorias funcionais",
+      "_resource_count": 105,
+      "_complexity": "full",
+      "_categories": [
+        "search_research",
+        "development",
+        "databases",
+        "communication",
+        "productivity"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "research",
+          "development",
+          "database",
+          "communication",
+          "productivity"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "balanced_performance",
+        "resource_limits": {
+          "cpus": 2,
+          "memory": "4GB",
+          "timeout": "60s"
+        }
+      }
+    },
+    "docker-mcp-gateway-developer": {
+      "_comment": "Configuração otimizada para desenvolvedores",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=github,filesystem,context7,postgres,redis,duckduckgo,wikipedia-mcp",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração focada em desenvolvimento e infraestrutura",
+      "_resource_count": 65,
+      "_complexity": "intermediate",
+      "_categories": [
+        "development",
+        "databases",
+        "search_research"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "development",
+          "database",
+          "research"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "development_focused",
+        "resource_limits": {
+          "cpus": 2,
+          "memory": "3GB",
+          "timeout": "45s"
+        }
+      }
+    },
+    "docker-mcp-gateway-analyst": {
+      "_comment": "Configuração otimizada para analistas de dados",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=clickhouse,postgres,sqlite-mcp-server,duckduckgo,wikipedia-mcp,notion",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração focada em análise de dados e pesquisa",
+      "_resource_count": 55,
+      "_complexity": "intermediate",
+      "_categories": [
+        "databases",
+        "search_research",
+        "productivity"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "analytics",
+          "database",
+          "research",
+          "productivity"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "memory_optimized",
+        "resource_limits": {
+          "cpus": 2,
+          "memory": "3GB",
+          "timeout": "45s"
+        }
+      }
+    },
+    "docker-mcp-gateway-devops": {
+      "_comment": "Configuração otimizada para DevOps",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=kubernetes,slack,mcp-discord,filesystem,github,postgres",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração focada em operações e infraestrutura",
+      "_resource_count": 45,
+      "_complexity": "advanced",
+      "_categories": [
+        "development",
+        "communication",
+        "databases"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "devops",
+          "infrastructure",
+          "communication",
+          "database"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "performance",
+        "resource_limits": {
+          "cpus": 2,
+          "memory": "4GB",
+          "timeout": "60s"
+        }
+      }
+    },
+    "docker-mcp-gateway-basic": {
+      "_comment": "Configuração básica para começar",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=duckduckgo,wikipedia-mcp,github,filesystem",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração básica com servidores essenciais",
+      "_resource_count": 30,
+      "_complexity": "basic",
+      "_categories": [
+        "search_research",
+        "development"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "research",
+          "development",
+          "basic"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "balanced",
+        "resource_limits": {
+          "cpus": 1,
+          "memory": "2GB",
+          "timeout": "30s"
+        }
+      }
+    },
+    "docker-mcp-gateway-research": {
+      "_comment": "Configuração focada em pesquisa",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=duckduckgo,wikipedia-mcp,brave,notion,context7",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração otimizada para pesquisa e documentação",
+      "_resource_count": 35,
+      "_complexity": "basic",
+      "_categories": [
+        "search_research",
+        "productivity",
+        "development"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "research",
+          "documentation",
+          "productivity"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "research_focused",
+        "resource_limits": {
+          "cpus": 1,
+          "memory": "2GB",
+          "timeout": "30s"
+        }
+      }
+    },
+    "docker-mcp-gateway-database": {
+      "_comment": "Configuração focada em bancos de dados",
+      "command": "docker",
+      "args": [
+        "mcp",
+        "gateway",
+        "run",
+        "--servers=postgres,redis,clickhouse,sqlite-mcp-server",
+        "--verbose=false",
+        "--log-calls=true",
+        "--transport=stdio"
+      ],
+      "_description": "Configuração especializada em operações de banco de dados",
+      "_resource_count": 36,
+      "_complexity": "intermediate",
+      "_categories": [
+        "databases"
+      ],
+      "_ai_optimized": true,
+      "_auto_discovery": true,
+      "_last_updated": "2025-11-07T02:00:00Z",
+      "disabled": false,
+      "alwaysAllow": [],
+      "_metadata": {
+        "ai_tags": [
+          "database",
+          "analytics",
+          "storage"
+        ],
+        "compatibility": {
+          "claude_desktop": "full",
+          "vscode": "full",
+          "cursor": "full",
+          "other_agents": "full"
+        },
+        "optimization_profile": "database_optimized",
+        "resource_limits": {
+          "cpus": 2,
+          "memory": "3GB",
+          "timeout": "45s"
+        }
+      }
+    }
+  }
+}
